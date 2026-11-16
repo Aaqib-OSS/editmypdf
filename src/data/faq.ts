@@ -48,7 +48,7 @@ export const FAQ: FaqEntry[] = [
   {
     question: "Where are my documents kept?",
     answer:
-      "In this browser, in an IndexedDB database named `pdf-editor`. Each document gets its own link, so a refresh brings it back with every edit. The documents page lists what is stored and lets you remove any of them; clearing the site's data in your browser removes everything.",
+      "In this browser. The PDF bytes and annotations are kept in the `pdf-editor` IndexedDB database; small PDFs and annotations are also copied to localStorage. The document list, theme, zoom, fit mode, panel visibility and panel layout are stored in localStorage. Saved signatures and added fonts are stored in IndexedDB. The current tab keeps its selected tool, shape and page rotation in sessionStorage. The [privacy page](/privacy) lists each key and what it holds. The documents page lets you remove a document; clearing this site's data in your browser removes the stored data.",
   },
   {
     question: "Does it work on a phone?",

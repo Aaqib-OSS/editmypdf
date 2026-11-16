@@ -43,17 +43,73 @@ export function Privacy() {
         <h2>What is stored in your browser</h2>
         <ul>
           <li>
-            <strong>IndexedDB</strong>, database <code>pdf-editor</code>: the bytes of every PDF you opened
-            and the edits you made to each, so that a document's link keeps working after a refresh.
+            <strong>IndexedDB</strong>, database <code>pdf-editor</code>, object store <code>session</code>:
+            <code>file:&lt;id&gt;</code> stores each PDF's bytes and name.
           </li>
           <li>
-            <strong>localStorage</strong>: the list of your documents (name, created and updated times),
-            the theme you chose, the last zoom level and whether the properties panel is open. Small PDFs
-            may also be mirrored here as a fallback when IndexedDB is unavailable.
+            <strong>IndexedDB</strong>, <code>ann:&lt;id&gt;</code>: the annotations for each document.
           </li>
           <li>
-            <strong>sessionStorage</strong>: the tool, shape and page rotation you last used in a tab, so
-            they survive a reload of that tab only.
+            <strong>IndexedDB</strong>, <code>app:saved-signatures</code>: saved signature images and
+            typed signature details.
+          </li>
+          <li>
+            <strong>IndexedDB</strong>, <code>app:user-fonts</code>: font files added or selected for use
+            with document text.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:sessions</code>: the document index, including
+            each document's name and created and updated times.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:pdf:&lt;id&gt;</code>: a base64 copy of every
+            PDF up to 1,200,000 bytes. This is written whenever a small PDF is saved, alongside its
+            IndexedDB copy, not only when IndexedDB is unavailable.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:ann:&lt;id&gt;</code>: each document's
+            annotations, also written to IndexedDB.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:theme</code>: the selected theme
+            (<code>system</code>, <code>light</code> or <code>dark</code>).
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:zoom</code>: the last zoom level.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:fit</code>: the selected fit mode
+            (<code>page</code>, <code>width</code> or <code>height</code>), when one is selected.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:inspector</code>: whether the edits-and-properties
+            panel is open.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:pages-panel</code>: whether the pages panel
+            is open.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:inspector-layout</code>: the edits-and-properties
+            panel width and the split between its object list and properties pane.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:analytics</code>: whether Google Analytics
+            visit counting was accepted or declined, when that feature is enabled in the build.
+          </li>
+          <li>
+            <strong>sessionStorage</strong>, <code>pdf-editor:chrome:&lt;id&gt;</code>: the last selected
+            tool, shape and page rotation for each document in this tab.
+          </li>
+          <li>
+            <strong>sessionStorage</strong>, <code>pdf-editor:chunk-reload</code>: the timestamp used to
+            prevent repeated reloads when a deployed JavaScript chunk is missing.
+          </li>
+          <li>
+            <strong>localStorage</strong>, <code>pdf-editor:migrated</code>: whether the one-time migration
+            from the earlier document-storage format has run. The migration reads and then removes the
+            legacy <code>pdf-editor:meta</code>, <code>pdf-editor:pdf</code>,
+            <code>pdf-editor:annotations</code> and <code>pdf-editor:files</code> keys.
           </li>
         </ul>
         <p>
