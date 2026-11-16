@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { Image as ImageIcon, Layers, Pencil, RotateCcw, Signature, TextCursorInput, Trash2, TriangleAlert, Type } from "lucide-react";
+import { ChevronDown, ChevronUp, Image as ImageIcon, Layers, Pencil, RotateCcw, Signature, TextCursorInput, Trash2, TriangleAlert, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -43,6 +43,7 @@ function RemoveButton({
   open,
   onOpenChange,
   onRemove,
+  onMove,
 }: {
   name: string;
   removal: Removal;
@@ -122,6 +123,7 @@ export function ObjectList({
   onHover,
   onSelect,
   onRemove,
+  onMove,
 }: {
   objects: ObjectRow[];
   selectedId: string | null;
@@ -129,6 +131,7 @@ export function ObjectList({
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
   onRemove: (id: string) => void;
+  onMove: (id: string, direction: "front" | "back") => void;
 }) {
   const listRef = useRef<HTMLUListElement>(null);
   // The row whose Remove is asking for confirmation; one at a time.
@@ -154,7 +157,7 @@ export function ObjectList({
 
   return (
     <ul ref={listRef} className="object-list" aria-label="Edits, in the order added">
-      {objects.map((row) => {
+      {objects.map((row, index) => {
         const selected = row.id === selectedId;
         const hot = row.id === hotId;
         const name = `${row.number}, ${row.title}${row.detail ? `: ${row.detail}` : ""}${row.changed ? ", changed" : ""}, page ${row.page + 1}`;
@@ -192,6 +195,32 @@ export function ObjectList({
                 p.{row.page + 1}
               </span>
             </button>
+            <div className="object-order-actions">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="object-order-button"
+                aria-label={`Bring ${row.title} forward`}
+                title="Bring forward"
+                disabled={!objects.slice(index + 1).some((item) => item.page === row.page)}
+                onClick={() => onMove(row.id, "front")}
+              >
+                <ChevronUp />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                className="object-order-button"
+                aria-label={`Send ${row.title} backward`}
+                title="Send backward"
+                disabled={!objects.slice(0, index).some((item) => item.page === row.page)}
+                onClick={() => onMove(row.id, "back")}
+              >
+                <ChevronDown />
+              </Button>
+            </div>
             <RemoveButton
               name={name}
               removal={row.removal}

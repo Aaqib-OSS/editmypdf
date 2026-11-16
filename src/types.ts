@@ -167,6 +167,7 @@ export type SignatureAnnotation = Base & {
   w: number;
   h: number;
   rotation: number;
+  label?: "Image";
 };
 
 // One run of a text patch set in its own face. A patch's spans, in order, concatenate to its text.

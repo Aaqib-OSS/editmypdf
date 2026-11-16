@@ -23,6 +23,7 @@ import {
   FileText,
   FolderOpen,
   LayoutGrid,
+  ImagePlus,
   Monitor,
   Moon,
   MousePointer2,
@@ -392,6 +393,7 @@ export function Editor({ sessionId }: { sessionId: string }) {
   const [barHover, setBarHover] = useState(false);
   const theme = useSyncExternalStore(subscribeTheme, readTheme, serverTheme);
   const fileRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
   const pagesRef = useRef<HTMLDivElement>(null);
   const scrollTipTimer = useRef(0);
   const loadedRef = useRef<LoadedPdf | null>(null);
@@ -556,6 +558,27 @@ export function Editor({ sessionId }: { sessionId: string }) {
       save(current.filter((item) => item.id !== id));
       if (selectedRef.current === id) setSelectedId(null);
       if (removed.kind === "patch") setContentSelection(null);
+    },
+    [getAnnotations, save],
+  );
+
+  const moveObjectLayer = useCallback(
+    (id: string, direction: "front" | "back") => {
+      const current = getAnnotations();
+      const index = current.findIndex((item) => item.id === id);
+      if (index < 0) return;
+      const item = current[index];
+      if (!item) return;
+      const step = direction === "front" ? 1 : -1;
+      let target = index + step;
+      while (target >= 0 && target < current.length && current[target]?.page !== item.page) target += step;
+      if (target < 0 || target >= current.length) return;
+      const next = [...current];
+      const other = next[target];
+      if (!other || other.page !== item.page) return;
+      next[index] = other;
+      next[target] = item;
+      save(next);
     },
     [getAnnotations, save],
   );
@@ -879,7 +902,7 @@ export function Editor({ sessionId }: { sessionId: string }) {
       width = maxWidth;
       height = width / aspect;
     }
-    const placed = history.valueRef.current.filter((item) => item.kind === "signature" && item.page === page).length;
+    const placed = history.valueRef.current.filter((item) => item.kind === "signature" && !item.label && item.page === page).length;
     const nudge = (placed % 8) * 16;
     const annotation: SignatureAnnotation = {
       id: uid(),
@@ -894,6 +917,59 @@ export function Editor({ sessionId }: { sessionId: string }) {
     };
     save([...history.valueRef.current, annotation]);
     setSelectedId(annotation.id);
+  };
+  const insertImage = async (file: File) => {
+    if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 15_000_000) {
+      setError("Choose a PNG, JPEG or WebP image smaller than 15 MB.");
+      return;
+    }
+    const current = loadedRef.current;
+    if (!current || current.pages.length === 0) return;
+    let bitmap: ImageBitmap | null = null;
+    try {
+      bitmap = await createImageBitmap(file);
+      const pixelScale = Math.min(1, Math.sqrt(24_000_000 / Math.max(1, bitmap.width * bitmap.height)));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(bitmap.width * pixelScale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * pixelScale));
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Could not prepare that image.");
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const src = canvas.toDataURL("image/png");
+      const page = Math.min(readout.index, current.pages.length - 1);
+      const viewport = current.viewports[page];
+      if (!viewport) return;
+      const aspect = canvas.width / Math.max(1, canvas.height);
+      const maxWidth = Math.max(24, viewport.width * 0.65);
+      const maxHeight = Math.max(24, viewport.height * 0.45);
+      let width = maxWidth;
+      let height = width / aspect;
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = height * aspect;
+      }
+      const placed = history.valueRef.current.filter((item) => item.kind === "signature" && item.label === "Image" && item.page === page).length;
+      const nudge = (placed % 8) * 14;
+      const annotation: SignatureAnnotation = {
+        id: uid(),
+        page,
+        kind: "signature",
+        label: "Image",
+        src,
+        x: Math.min(viewport.width - width - 8, Math.max(8, (viewport.width - width) / 2 + nudge)),
+        y: Math.min(viewport.height - height - 8, Math.max(8, (viewport.height - height) / 2 + nudge)),
+        w: width,
+        h: height,
+        rotation: 0,
+      };
+      save([...history.valueRef.current, annotation]);
+      setSelectedId(annotation.id);
+      setError(null);
+    } catch {
+      setError("Could not read that image. Choose a valid PNG, JPEG or WebP file.");
+    } finally {
+      bitmap?.close();
+    }
   };
 
   // The zoom at which the pages fit the room they have: by width, by height, or both.
@@ -1040,7 +1116,13 @@ export function Editor({ sessionId }: { sessionId: string }) {
 
   const onDrop = (event: ReactDragEvent<HTMLElement>) => {
     event.preventDefault();
-    void openFiles([...event.dataTransfer.files]);
+    const files = [...event.dataTransfer.files];
+    const pdfs = files.filter((file) => file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf"));
+    const images = files.filter((file) => /^image\/(png|jpeg|webp)$/.test(file.type));
+    void (async () => {
+      if (pdfs.length > 0) await openFiles(pdfs);
+      for (const file of images) await insertImage(file);
+    })();
   };
 
   const pageTotal = loaded?.pages.length ?? 0;
@@ -1187,6 +1269,7 @@ export function Editor({ sessionId }: { sessionId: string }) {
           ],
         },
         { kind: "item", label: "Emoji", icon: <Smile />, shortcut: "M", onSelect: () => chooseTool("emoji") },
+        { kind: "item", label: "Image…", icon: <ImagePlus />, onSelect: () => imageRef.current?.click() },
         { kind: "item", label: "Signature", icon: <Signature />, shortcut: "G", onSelect: () => chooseTool("signature") },
       ],
     },
@@ -1299,6 +1382,17 @@ export function Editor({ sessionId }: { sessionId: string }) {
             const files = [...(event.target.files ?? [])];
             event.target.value = "";
             if (files.length > 0) void openFiles(files);
+          }}
+        />
+        <input
+          ref={imageRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          hidden
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            event.target.value = "";
+            if (file) void insertImage(file);
           }}
         />
       </AppBar>
@@ -1486,6 +1580,7 @@ export function Editor({ sessionId }: { sessionId: string }) {
           onHoverObject={hoverFromList}
           onSelectObject={setSelectedId}
           onRemoveObject={removeObject}
+          onMoveObject={moveObjectLayer}
           format={selected?.kind === "patch" ? formatState : null}
           onFormat={applyFormat}
           onFormatBegin={beginFormat}

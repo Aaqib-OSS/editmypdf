@@ -524,6 +524,7 @@ export function Inspector({
   onHoverObject,
   onSelectObject,
   onRemoveObject,
+  onMoveObject,
   format,
   onFormat,
   onFormatBegin,
@@ -567,6 +568,7 @@ export function Inspector({
   onHoverObject: (id: string | null) => void;
   onSelectObject: (id: string) => void;
   onRemoveObject: (id: string) => void;
+  onMoveObject: (id: string, direction: "front" | "back") => void;
   // How the selected text patch's caret or selection is formatted, and the actions on it; the
   // same ones the floating bar over the page offers.
   format: FormatState | null;
@@ -662,6 +664,7 @@ export function Inspector({
               onHover={onHoverObject}
               onSelect={onSelectObject}
               onRemove={onRemoveObject}
+              onMove={onMoveObject}
             />
           </ScrollArea>
         </section>

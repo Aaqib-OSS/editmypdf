@@ -1712,6 +1712,39 @@ body.resizing-rows {
   opacity: 0;
 }
 
+.object-order-actions {
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  display: flex;
+  gap: 1px;
+  opacity: 0;
+  transform: translate(8px, -50%);
+  pointer-events: none;
+  transition:
+    opacity 140ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+
+.object-row:hover .object-order-actions,
+.object-row:focus-within .object-order-actions {
+  opacity: 1;
+  transform: translate(0, -50%);
+  pointer-events: auto;
+}
+
+.object-order-button {
+  width: 20px;
+  height: 22px;
+  padding: 0;
+  color: var(--ink-muted);
+}
+
+.object-order-button svg {
+  width: 12px;
+  height: 12px;
+}
+
 .object-remove {
   position: absolute;
   top: 50%;

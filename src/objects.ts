@@ -92,7 +92,11 @@ function describe(annotation: Annotation): Omit<ObjectRow, "id" | "number" | "pa
         icon: { kind: "picture", src: emojiSrc(annotation.emoji), wide: false },
       };
     case "signature":
-      return { title: "Signature", detail: null, icon: { kind: "picture", src: annotation.src, wide: true } };
+      return {
+        title: annotation.label === "Image" ? "Image" : "Signature",
+        detail: null,
+        icon: { kind: "picture", src: annotation.src, wide: true },
+      };
     case "patch":
       return annotation.role === "text"
         ? { title: "Edited text", detail: firstWords(annotation.text), icon: { kind: "patch" } }
