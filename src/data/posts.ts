@@ -851,7 +851,7 @@ The PDF on your screen is almost certainly editable already. [Open it in Edit My
 const EDIT_ON_MAC = `
 Every Mac ships with a PDF editor that is very nearly good enough. Preview opens the file instantly, lets you sign it with the trackpad, highlight it, draw on it, fill in its boxes and shuffle its pages, all for free. Then you double-click a word to fix a typo and nothing happens.
 
-That's not you. Preview can't change the text that's already printed in a PDF, and Apple's own Preview guide says so. It can lay new text *on top*, in a text box, but the old words stay underneath and the new ones never quite match. For the one job most people mean by "edit a PDF", the built-in tool stops one step short.
+That's not you. Preview can't change the text that's already printed in a PDF; Apple's Preview guide has said so for years. It can lay new text *on top*, in a text box, but the old words stay underneath and the new ones never quite match. For the one job most people mean by "edit a PDF", the built-in tool stops one step short.
 
 This guide covers the free way to take that last step on a Mac, in Safari or Chrome, without installing anything, and then what Preview is still the best tool for, because it's good at the rest.
 
@@ -939,7 +939,7 @@ Yes. Safari, Chrome, Firefox and Edge are all fine on macOS. The file is read an
 
 ### Does my PDF get uploaded?
 
-No. There's no server in the project to upload to. Open the Network tab of Safari's Web Inspector while you edit and nothing leaves; [nothing leaves your browser](/blog/nothing-leaves-your-browser) explains how it's built.
+No. There's no server in the project to upload to. Open the Network tab of Safari's Web Inspector while you edit: the only requests are for the app's own files, and your document is never among them. [Nothing leaves your browser](/blog/nothing-leaves-your-browser) explains how it's built.
 
 ### Where does the edited PDF go?
 
@@ -996,7 +996,7 @@ export const POSTS: Post[] = [
       "how to edit a pdf in preview",
       "edit text in pdf on mac",
       "edit pdf on macbook",
-      "edit pdf without adobe on mac",
+      "edit pdf on mac without acrobat",
       "edit pdf in safari",
     ],
     cover: { glyph: "⌘", hue: "coral" },

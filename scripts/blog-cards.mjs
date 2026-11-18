@@ -102,6 +102,14 @@ const mono = (x, y, size, text, fill = "var(--tone-ink)") =>
 // A dashed connector.
 const dashed = (d, stroke = "var(--tone)", width = 2) =>
   `<path d="${d}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-dasharray="4 7" stroke-linecap="round"/>`;
+// A browser window at editmypdf.dev: frame, title bar, traffic lights and the address pill.
+const browserWindow = (w, h) =>
+  `<rect width="${w}" height="${h}" rx="14" fill="#fff" stroke="${PAGE_EDGE}" filter="url(#shadow)"/>
+  <rect width="${w}" height="38" rx="14" fill="${PAPER_2}"/><rect y="24" width="${w}" height="14" fill="${PAPER_2}"/>
+  <circle cx="20" cy="19" r="5" fill="#e0a07a"/><circle cx="36" cy="19" r="5" fill="#d9c66e"/><circle cx="52" cy="19" r="5" fill="#8fc49a"/>
+  <rect x="72" y="9" width="${w - 130}" height="20" rx="10" fill="#fff" stroke="${PAGE_EDGE}"/>
+  ${icon("lock", 80, 13, 12, "var(--tone-ink)")}
+  <text x="98" y="23" font-family='${SANS}' font-weight="500" font-size="11" fill="${INK_1}">editmypdf.dev</text>`;
 // The usual block of body lines on a page.
 const body = (x, y, widths, gap = 16, h = 6) => widths.map((w, i) => ln(x, y + i * gap, w, h)).join("");
 
@@ -130,12 +138,7 @@ ${dashed("M290 338 L340 338")}${tile(342, 308, "lock")}${badge(402, 308, false, 
     pills: [["globe", "Safari or Chrome"], ["type", "The page's own font"], ["badge-check", "Free, nothing to install"]],
     svg: `
 <g transform="translate(30 40)">
-  <rect width="340" height="330" rx="14" fill="#fff" stroke="${PAGE_EDGE}" filter="url(#shadow)"/>
-  <rect width="340" height="38" rx="14" fill="${PAPER_2}"/><rect y="24" width="340" height="14" fill="${PAPER_2}"/>
-  <circle cx="20" cy="19" r="5" fill="#e0a07a"/><circle cx="36" cy="19" r="5" fill="#d9c66e"/><circle cx="52" cy="19" r="5" fill="#8fc49a"/>
-  <rect x="72" y="9" width="196" height="20" rx="10" fill="#fff" stroke="${PAGE_EDGE}"/>
-  ${icon("lock", 80, 13, 12, "var(--tone-ink)")}
-  <text x="98" y="23" font-family='${SANS}' font-weight="500" font-size="11" fill="${INK_1}">editmypdf.dev</text>
+  ${browserWindow(340, 330)}
   <g transform="translate(70 60)">
     <rect width="200" height="250" rx="6" fill="#fff" stroke="${PAGE_EDGE}"/>
     ${ln(18, 20, 80, 7, LINE_DARK)}
@@ -303,12 +306,7 @@ ${badge(320, 30)}
     pills: [["server-off", "No server"], ["lock", "Nothing uploaded"], ["search", "Check it yourself"]],
     svg: `
 <g transform="translate(30 50)">
-  <rect width="330" height="300" rx="14" fill="#fff" stroke="${PAGE_EDGE}" filter="url(#shadow)"/>
-  <rect width="330" height="38" rx="14" fill="${PAPER_2}"/><rect y="24" width="330" height="14" fill="${PAPER_2}"/>
-  <circle cx="20" cy="19" r="5" fill="#e0a07a"/><circle cx="36" cy="19" r="5" fill="#d9c66e"/><circle cx="52" cy="19" r="5" fill="#8fc49a"/>
-  <rect x="72" y="9" width="200" height="20" rx="10" fill="#fff" stroke="${PAGE_EDGE}"/>
-  ${icon("lock", 80, 13, 12, "var(--tone-ink)")}
-  <text x="98" y="23" font-family='${SANS}' font-weight="500" font-size="11" fill="${INK_1}">editmypdf.dev</text>
+  ${browserWindow(330, 300)}
   <g transform="translate(85 64)">
     <rect width="160" height="210" rx="6" fill="#fff" stroke="${PAGE_EDGE}"/>
     ${ln(16, 18, 70, 7, LINE_DARK)}
