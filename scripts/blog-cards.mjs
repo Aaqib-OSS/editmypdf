@@ -108,6 +108,48 @@ const body = (x, y, widths, gap = 16, h = 6) => widths.map((w, i) => ln(x, y + i
 /* ---- The scenes, one per post, each in a 480×420 box ------------------------------------ */
 
 const SCENES = {
+  "how-to-make-a-pdf-editable": {
+    pills: [["text-cursor-input", "Text: click and type"], ["scan-text", "Scan: needs OCR"], ["lock", "Locked: ask the author"]],
+    svg: `
+${page(40, 30, 250, 360, `
+  ${ln(24, 28, 110, 9, LINE_DARK)}
+  ${body(24, 56, [202, 170, 190], 16)}
+  <rect x="24" y="106" width="140" height="10" rx="5" fill="var(--tone)"/>
+  <rect x="168" y="102" width="2" height="18" fill="var(--tone-ink)"/>
+  ${body(24, 134, [202, 160, 196, 120], 16)}
+  ${body(24, 216, [202, 184, 150], 16)}
+  ${body(24, 282, [202, 140], 16)}
+`)}
+${badge(290, 30)}
+${dashed("M290 110 L340 110")}${tile(342, 80, "text-cursor-input")}${badge(402, 80, true, 12)}
+${dashed("M290 224 L340 224")}${tile(342, 194, "scan-text")}${badge(402, 194, false, 12)}
+${dashed("M290 338 L340 338")}${tile(342, 308, "lock")}${badge(402, 308, false, 12)}
+`,
+  },
+  "edit-pdf-on-mac-free": {
+    pills: [["globe", "Safari or Chrome"], ["type", "The page's own font"], ["badge-check", "Free, nothing to install"]],
+    svg: `
+<g transform="translate(30 40)">
+  <rect width="340" height="330" rx="14" fill="#fff" stroke="${PAGE_EDGE}" filter="url(#shadow)"/>
+  <rect width="340" height="38" rx="14" fill="${PAPER_2}"/><rect y="24" width="340" height="14" fill="${PAPER_2}"/>
+  <circle cx="20" cy="19" r="5" fill="#e0a07a"/><circle cx="36" cy="19" r="5" fill="#d9c66e"/><circle cx="52" cy="19" r="5" fill="#8fc49a"/>
+  <rect x="72" y="9" width="196" height="20" rx="10" fill="#fff" stroke="${PAGE_EDGE}"/>
+  ${icon("lock", 80, 13, 12, "var(--tone-ink)")}
+  <text x="98" y="23" font-family='${SANS}' font-weight="500" font-size="11" fill="${INK_1}">editmypdf.dev</text>
+  <g transform="translate(70 60)">
+    <rect width="200" height="250" rx="6" fill="#fff" stroke="${PAGE_EDGE}"/>
+    ${ln(18, 20, 80, 7, LINE_DARK)}
+    ${body(18, 42, [164, 140, 158], 14, 5)}
+    <rect x="18" y="88" width="110" height="8" rx="4" fill="var(--tone)"/>
+    <rect x="131" y="84" width="2" height="16" fill="var(--tone-ink)"/>
+    ${body(18, 112, [164, 150, 160, 164, 100], 14, 5)}
+    ${body(18, 196, [164, 120, 150], 14, 5)}
+  </g>
+</g>
+${badge(370, 40)}
+${display(380, 372, 124, "⌘")}
+`,
+  },
   "scans-cjk-text-and-colour-profiles": {
     pills: [["image", "Scanned pages"], ["languages", "CJK text"], ["palette", "ICC colour"]],
     svg: `

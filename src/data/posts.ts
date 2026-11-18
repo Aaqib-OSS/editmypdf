@@ -720,7 +720,295 @@ Scans from a copier, forms from a government site, a paper in Japanese or Korean
 If you read code, the build step that ships the helper files is in \`vite.config.ts\`, the one door is \`openDocument\` in \`src/pdf.ts\`, and the byte repair is \`src/soundFontkit.ts\`.
 `;
 
+const MAKE_EDITABLE = `
+"How do I make this PDF editable?" is one of the most searched questions about PDFs, and most of the answers want you to convert the file to Word first. That is nearly always the long way round. :thinking:
+
+Here's what the question hides: a PDF isn't editable or uneditable. Your *viewer* is. Preview, Chrome, Edge and the free Acrobat Reader show PDFs beautifully and change nothing, so when you double-click a word and nothing happens, the file hasn't been locked against you. You've opened it in something that doesn't edit.
+
+Most of the time, then, there's nothing to convert. You need an editor, and a ten-second test to tell which of the three kinds of PDF you're holding.
+
+## The ten-second test
+
+Open the PDF in whatever you normally use and try to select a few words with the mouse, as if you were about to copy them.
+
+::: cards
+- {{file-text}} **The words highlight one by one.** It's a normal text PDF, and it's already editable. Skip to the next section.
+- {{image}} **Nothing highlights, or the whole page selects as one block.** It's a scan: a photograph of a page with no text in it. See [a scanned PDF](#a-scanned-pdf-ocr-or-nothing-at-all).
+- {{lock}} **The file asks for a password, or an editor refuses it.** It's locked. See [a locked PDF](#a-locked-pdf-two-kinds-of-lock).
+:::
+
+There's one rarer case: the words look like text, selecting them does nothing, and it isn't a scan. The designer's software turned the letters into outlines before export. There's a [section for that](#text-that-was-turned-into-shapes) too.
+
+## A normal PDF: edit it where it is
+
+If the words selected, every letter on that page is stored as text, in the font the document embeds. An editor that works on the page itself can change them in place. Nothing needs converting.
+
+::: steps
+- **Open Edit My PDF.** [Open it](/app) in Chrome, Edge, Firefox or Safari. No account, nothing to install.
+- **Drop the PDF onto the page.** It opens from your disk and stays there. There's no upload step because there's no server.
+- **Click the line you want to change and type.** The line opens in the page's own font, at its size and colour. A paragraph wraps inside its own column.
+- **Download.** You get a normal PDF. The original words are gone from the file and your words are real, selectable text in their place.
+:::
+
+::: good The result
+The downloaded file is still a PDF, in the same fonts, with the same layout. Nobody reading it can tell which line was retyped, which is the point: you came to fix a date, not to redesign the document.
+:::
+
+A few things people worry about here. Bold and italic runs keep their style when you edit the paragraph around them. A figure in a table cell is reachable as text, so a price changes without redrawing the table. And if you type a character the embedded font never included (the document used no "ß", say), the editor shows it in a stand-in font and paints that one edit as an image on download, so the page still looks right. Everything else stays text.
+
+What Edit My PDF won't do: OCR, merging, splitting, compressing or converting to Word. For those jobs the [comparison pages](/compare) say plainly which tools are good.
+
+## A scanned PDF: OCR, or nothing at all
+
+A scan is a picture. A photocopier, a phone camera or a "scan to PDF" button produced an image of a page and wrapped it in a PDF, and as far as the file knows there are no letters on it at all. No editor can retype words that aren't there, this one included.
+
+You have two routes, and which one you need depends on what you're actually trying to do.
+
+::: pair Change the printed words | Add to the page
+- The scan needs **OCR** (optical character recognition), which reads the picture and guesses the text.
+- Acrobat Pro, [iLovePDF](/compare/ilovepdf), [Smallpdf](/compare/smallpdf) and others do this; the comparisons mark which.
+- OCR is a guess. Check names, numbers and dates afterwards.
+- The result still edits as a cover-up: new words laid over the picture.
+---
+- You don't need OCR to fill in or sign a scan.
+- In Edit My PDF, choose the Text tool (press <kbd>T</kbd>) and type where the answer goes, in Helvetica, Times or Courier.
+- Sign it with a typed or drawn signature.
+- Download. The scan is untouched underneath; your additions are real text on top.
+:::
+
+In practice, most "I need to edit this scanned PDF" jobs are forms and letters that need a name, a date and a signature, and those don't need OCR at all.
+
+## A locked PDF: two kinds of lock
+
+::: cards
+- {{lock}} **An open password.** The file shows nothing without it. There is no way round this that doesn't involve the password, so ask whoever sent the file.
+- {{ban}} **A permissions password.** The file opens and reads fine, but it was saved with editing (or printing, or copying) switched off. The person who made it can save a copy without the restriction.
+:::
+
+Edit My PDF tells you plainly when a file needs a password to open and doesn't try to get round it; the lock was the author's decision. If a file has been digitally signed or certified, treat it the same way: any edit breaks the signature, which is exactly what signatures are for. Ask for an unsigned copy.
+
+## Text that was turned into shapes
+
+Occasionally a PDF looks like text, isn't a scan, and still won't select. Design tools can "outline" fonts before export, replacing every letter with a tiny drawing of that letter, usually so the file prints identically on a machine that lacks the font. It's common in logos, posters and some brochures.
+
+Once outlined, the letters are shapes like any other shape, and there's nothing for an editor to retype. The real fix is the source document (the InDesign, Illustrator or Figma file) or a re-export with fonts embedded instead of outlined. If you can't get either, the fallback is the same as for a scan: cover and retype with text boxes, or convert to Word and accept the mess.
+
+## When "editable" means "fillable"
+
+Some people searching for an editable PDF want a **fillable form**: a PDF with proper boxes a reader can type into, tick and send back. That's a different thing from editing. Creating the boxes needs a form designer; Acrobat Pro, [pdfFiller](/compare/pdffiller) and LibreOffice Writer all do it.
+
+If you're on the other end, holding a form that *isn't* fillable, you don't need any of that. Type on the page. Edit My PDF's Text tool puts a text box anywhere, in Helvetica, Times or Courier, and typing straight into a printed line works too. Download, and the form is filled.
+
+## When converting to Word is the right answer
+
+Converting a PDF to Word rebuilds the document as paragraphs and pictures, and the rebuild is never exact. Columns merge, fonts get swapped for whatever is installed, tables turn into tab stops and anything decorative drifts. For a one-line fix it's a terrible trade.
+
+It's the right trade when you're going to **rewrite** the document: a two-year-old proposal you need to reuse, a CV you only have as a PDF, a report that needs new sections. Then having a document you can keep working in matters more than keeping the layout, and the route is well trodden. Word (2013 or later) opens a PDF directly and converts it, Google Docs does the same when you open a PDF from Drive with Docs, and both export back to PDF when you're done.
+
+::: pair Edit the PDF in place | Convert to Word
+- Right for a word, a line, a figure, a date, a paragraph
+- Fonts, spacing and layout stay as they were
+- Minutes, in a browser, free
+- The file stays a PDF throughout
+---
+- Right for rewriting most of the document
+- Layout is rebuilt and will change
+- Fonts are substituted unless installed
+- You export a new PDF at the end
+:::
+
+## Questions people ask
+
+### How do I make a PDF editable for free?
+
+If the text selects in a viewer, it already is: open it in [Edit My PDF](/app), click a line and type. No conversion, no account, no watermark. If it's a scan, you need a tool with OCR, or you can type on top of it for free.
+
+### Why can't I edit my PDF?
+
+Nearly always because you opened it in a viewer. Preview, Chrome, Edge and Acrobat Reader display PDFs; they don't change their text. Less often the file is a scan (no text to edit) or has a permissions password (editing switched off by its author).
+
+### How do I convert a PDF to an editable PDF?
+
+You usually don't have to: a PDF with text in it is editable by any editor that works on the page. The conversion people mean is OCR, which only scans need, or PDF to Word, which is only worth it when you're rewriting the document.
+
+### Can I make a scanned PDF editable?
+
+Only with OCR, which guesses the words from the picture and lets you cover and retype them. To fill in or sign a scan you don't need OCR: add text boxes and a signature on top.
+
+### How do I make a PDF editable without Adobe Acrobat?
+
+Any editor that changes text in place will do it. Edit My PDF does it in your browser for free and keeps the page's own font. The free Acrobat Reader doesn't edit text; that's the paid Acrobat Standard and Pro, which the [Acrobat comparison](/compare/adobe-acrobat-online) covers.
+
+### Is it safe to make a PDF editable online?
+
+It depends where the file goes. Most online converters upload it to their servers and keep it for a while. Edit My PDF has no server: the file opens in your browser tab and never leaves your computer, which you can [check yourself](/blog/nothing-leaves-your-browser).
+
+## Skip the conversion
+
+The PDF on your screen is almost certainly editable already. [Open it in Edit My PDF](/app), click the line, type, download. If the ten-second test says scan or lock, you now know which tool you really need, and it isn't a Word converter.
+`;
+
+const EDIT_ON_MAC = `
+Every Mac ships with a PDF editor that is very nearly good enough. Preview opens the file instantly, lets you sign it with the trackpad, highlight it, draw on it, fill in its boxes and shuffle its pages, all for free. Then you double-click a word to fix a typo and nothing happens.
+
+That's not you. Preview can't change the text that's already printed in a PDF, and Apple's own Preview guide says so. It can lay new text *on top*, in a text box, but the old words stay underneath and the new ones never quite match. For the one job most people mean by "edit a PDF", the built-in tool stops one step short.
+
+This guide covers the free way to take that last step on a Mac, in Safari or Chrome, without installing anything, and then what Preview is still the best tool for, because it's good at the rest.
+
+## Changing the text of a PDF on a Mac
+
+::: steps
+- **Open Edit My PDF in Safari or Chrome.** [Open it](/app); Firefox and Edge work too. No download, no account, nothing from the App Store.
+- **Drag the PDF from the Finder onto the page.** It opens from your disk. There's no upload, because the app has no server to send it to.
+- **Click the line and type.** The line opens in the PDF's own embedded font at the same size, colour and spacing. Fix the word, change the date, retype the figure.
+- **Download.** A new PDF lands in your Downloads folder with your words as real, selectable text, and no watermark.
+:::
+
+The editor also keeps the document in your browser's storage, so you can close the tab, come back tomorrow and find it with every edit intact. It's kept nowhere else. :lock:
+
+::: pair Preview's text box | Edit My PDF
+- The old words stay under a white box
+- New text in Helvetica, whatever the page used
+- Lined up by eye, never quite flush
+- The page now has one odd line
+---
+- The old words are removed from the file
+- The page's own font, size and colour
+- Sits exactly where the original sat
+- Nobody can tell which line changed
+:::
+
+## Why the font matters more than it sounds
+
+A contract set in Garamond with one line in Helvetica looks edited, and that's the kind way to put it. Most PDFs embed their fonts, usually just the letters the document uses, and that embedded font is what Edit My PDF opens your line in. When you download, the edit is written back as text in a subset of the same font, so it prints, searches and copies like the rest of the page. The engineering behind that is in [exporting edits as real text](/blog/exporting-real-text), if you like that sort of thing.
+
+::: note What if I type a letter the font doesn't have?
+Embedded fonts often carry only the letters the document used. Type one it lacks and the editor shows it in a stand-in face; on download that one edit is painted as an image so the page still looks right. Everything else stays text.
+:::
+
+## What Preview is still the right tool for
+
+I use Preview most days. For everything that isn't changing words it's hard to beat, and all of it is free and already on your Mac. Open the Markup toolbar with the pen-tip button or <kbd>⇧⌘A</kbd>.
+
+::: cards
+- {{pen-line}} **Sign.** Markup toolbar, Sign, then draw on the trackpad, hold a signed piece of paper up to the camera, or sign on your iPhone. Preview remembers it.
+- {{highlighter}} **Highlight, underline and note.** The highlighter and the note tool live in the toolbar; the sidebar lists every annotation.
+- {{text-cursor-input}} **Fill in a proper form.** If the PDF has real form fields, click one and type. Tick boxes work too.
+- {{layers}} **Reorder, rotate and delete pages.** Show thumbnails with <kbd>⌥⌘2</kbd>, then drag pages about or press delete. Drag a page in from another PDF's thumbnails to merge.
+- {{package}} **Shrink the file.** File, Export, then the Reduce File Size Quartz filter. Rough, but free.
+- {{crop}} **Crop and convert.** Select a region and crop to it, or export a page as PNG or JPEG.
+:::
+
+::: tip The split that works
+Do the page work in Preview and the words in Edit My PDF. Neither does the other's job well, and both are free.
+:::
+
+## The other free routes on a Mac, honestly
+
+::: cards
+- {{file-text}} **Pages.** It can't open a PDF at all. Export to PDF, yes; edit one, no.
+- {{globe}} **Google Docs.** It opens a PDF from Drive and converts it. Fine for rewriting a whole document; it rebuilds the layout, swaps the fonts and usually mangles tables.
+- {{type}} **Microsoft Word for Mac.** The same conversion, somewhat better. Same trade: good for rewriting, poor for a one-line fix.
+- {{layers}} **LibreOffice Draw.** Opens a PDF with every line as a separate text object and saves a PDF back. Free and offline, but fonts have to be installed on your Mac or they're substituted, and paragraphs don't reflow.
+- {{ban}} **Acrobat Reader.** Free, and it reads, comments, fills and signs. Editing text is in the paid Acrobat Standard and Pro; the [Acrobat comparison](/compare/adobe-acrobat-online) has the details.
+:::
+
+And a limit of Edit My PDF, so you know before you start: a scanned PDF is a picture, and there's no OCR here. You can type on it and sign it, but its printed words can't be retyped. Tools that do OCR are marked in the [comparisons](/compare). There's also no merging, splitting or compressing, which is what Preview is for.
+
+## iPhone and iPad
+
+Markup on iOS and iPadOS has the same shape as Preview: sign, draw, add a text box, fill in fields, and no editing of printed text. Edit My PDF runs in Safari on an iPad comfortably, with touch for drawing, dragging and pinch-zoom. On an iPhone it works, but the panels are cramped; it's a laptop-shaped tool.
+
+## Questions people ask
+
+### Can Preview edit text in a PDF?
+
+No. It can add a text box on top of the page, sign, highlight, fill in form fields and rearrange pages, but it can't change the words that are already printed. That needs a PDF editor.
+
+### Is there a free PDF editor for Mac that edits text?
+
+Edit My PDF does, in Safari or Chrome, with no account and no watermark. LibreOffice Draw is a free desktop option with the font caveats above. Acrobat's free Reader doesn't edit text.
+
+### How do I edit a PDF on a Mac without Adobe?
+
+Use Preview for signing, annotating and pages, and a browser editor such as Edit My PDF for the text. Between them they cover what most people buy Acrobat for.
+
+### Does Edit My PDF work in Safari?
+
+Yes. Safari, Chrome, Firefox and Edge are all fine on macOS. The file is read and written inside the tab; the [privacy page](/privacy) lists the only things the site does see.
+
+### Does my PDF get uploaded?
+
+No. There's no server in the project to upload to. Open the Network tab of Safari's Web Inspector while you edit and nothing leaves; [nothing leaves your browser](/blog/nothing-leaves-your-browser) explains how it's built.
+
+### Where does the edited PDF go?
+
+To your Downloads folder, like any download, as a normal PDF. The copy in your browser's storage stays until you remove it from the documents page or clear the site's data.
+
+## Fix the word, keep the rest
+
+Keep Preview; it earns its place. When the job is the words themselves, [open the PDF in Edit My PDF](/app), click the line, type and download. The document never leaves your Mac, and it never shows it was edited.
+`;
+
 export const POSTS: Post[] = [
+  {
+    slug: "how-to-make-a-pdf-editable",
+    title: "How to make a PDF editable (and when you don't need to)",
+    description:
+      "Most PDFs are already editable; the viewer you opened them in can't edit. How to tell which kind you have (text, scan or locked) and the free fix for each.",
+    date: "2026-11-18",
+    tags: ["how-to", "pdf"],
+    keywords: [
+      "make a pdf editable",
+      "how to make a pdf editable",
+      "editable pdf",
+      "convert pdf to editable pdf",
+      "pdf not editable",
+      "why can't i edit my pdf",
+      "edit a pdf that is not editable",
+      "editable pdf free",
+      "make pdf editable without acrobat",
+      "pdf to word to edit",
+    ],
+    cover: { glyph: "ab|", hue: "accent" },
+    image: {
+      src: "/blog/cards/how-to-make-a-pdf-editable.png",
+      alt: "A page with one line highlighted and a cursor in it, beside three tiles: a text cursor with a tick, a scanned page with a cross and a lock with a cross.",
+      width: 1200,
+      height: 630,
+    },
+    thumbnail: "/blog/cards/how-to-make-a-pdf-editable.webp",
+    body: MAKE_EDITABLE,
+  },
+  {
+    slug: "edit-pdf-on-mac-free",
+    title: "How to edit a PDF on a Mac for free, including its text",
+    description:
+      "Preview can't change the words already printed in a PDF. How to edit the text, fill in and sign a PDF on a Mac for free, with nothing to install or upload.",
+    date: "2026-11-18",
+    tags: ["how-to", "mac"],
+    keywords: [
+      "edit pdf on mac",
+      "how to edit a pdf on mac",
+      "pdf editor mac free",
+      "free pdf editor for mac",
+      "edit pdf mac free",
+      "how to edit a pdf in preview",
+      "edit text in pdf on mac",
+      "edit pdf on macbook",
+      "edit pdf without adobe on mac",
+      "edit pdf in safari",
+    ],
+    cover: { glyph: "⌘", hue: "coral" },
+    image: {
+      src: "/blog/cards/edit-pdf-on-mac-free.png",
+      alt: "A Mac browser window at editmypdf.dev showing a page with one highlighted line being edited, beside a large command-key symbol.",
+      width: 1200,
+      height: 630,
+    },
+    thumbnail: "/blog/cards/edit-pdf-on-mac-free.webp",
+    body: EDIT_ON_MAC,
+  },
   {
     slug: "scans-cjk-text-and-colour-profiles",
     title: "Now open as intended: scans, Chinese, Japanese and Korean text, and colour profiles",
